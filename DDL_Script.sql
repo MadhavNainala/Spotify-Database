@@ -261,6 +261,3 @@ EXCEPTION
     DBMS_OUTPUT.put_line('Error occurred: ' || SQLERRM);
 END;
 /
-
-
-select * from user_tables;
