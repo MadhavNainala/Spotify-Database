@@ -244,14 +244,14 @@ EXCEPTION
 END;
 /
 
+
 BEGIN
   DropTableIfExists('History');
-  
 
   EXECUTE IMMEDIATE 'CREATE TABLE History (
     Songs_Song_Id NUMBER,
     Customers_Customer_Id NUMBER,
-    Date DATE,
+    History_Date DATE,
     CONSTRAINT fk_history_customers FOREIGN KEY (Customers_Customer_Id) REFERENCES Customers(Customer_Id),
     CONSTRAINT fk_history_songs FOREIGN KEY (Songs_Song_Id) REFERENCES Songs(Song_Id)
   )';
