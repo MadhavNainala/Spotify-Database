@@ -63,9 +63,10 @@ BEGIN
   EXECUTE IMMEDIATE 'CREATE TABLE Payment_Method (
     Payment_Id NUMBER DEFAULT payment_id_seq.NEXTVAL PRIMARY KEY, 
     Payment_Type VARCHAR2(50) CHECK (Payment_Type IN (''Card'', ''Bank Account'')),
-    Payment_Customers_Customer_Id NUMBER,
-    Promocodes_Promocode_Id NUMBER,
-    CONSTRAINT fk_payment_customers FOREIGN KEY (Payment_Customers_Customer_Id) REFERENCES Customers(Customer_Id)
+    Customer_Id NUMBER,
+    Promocode_Id NUMBER,
+    CONSTRAINT fk_Payment_Method_Customer_Id FOREIGN KEY (Customer_Id) REFERENCES Customers(Customer_Id),
+    CONSTRAINT fk_Payment_Method_Promocode_Id FOREIGN KEY (Promocode_Id) REFERENCES Promocodes(Promocode_Id)
   )';
   DBMS_OUTPUT.put_line('Payment Method table created successfully');
 EXCEPTION
@@ -88,8 +89,8 @@ BEGIN
     Routing_Number NUMBER,
     Account_Type VARCHAR2(50),
     Account_Limit NUMBER,
-    Payment_Method_Payment_Id NUMBER,
-    CONSTRAINT fk_bank_payment_method FOREIGN KEY (Payment_Method_Payment_Id) REFERENCES Payment_Method(Payment_Id)
+    Payment_Id NUMBER,
+    CONSTRAINT fk_Bank_Account_Payment_Id FOREIGN KEY (Payment_Id) REFERENCES Payment_Method(Payment_Id)
   )';
   DBMS_OUTPUT.put_line('Bank Account table created successfully');
 EXCEPTION
@@ -113,8 +114,8 @@ BEGIN
     Expiry_Date DATE,
     CVV_Code NUMBER,
     Zip VARCHAR2(10),
-    Payment_Method_Payment_Id NUMBER,
-    CONSTRAINT fk_card_payment_method FOREIGN KEY (Payment_Method_Payment_Id) REFERENCES Payment_Method(Payment_Id)
+    Payment_Id NUMBER,
+    CONSTRAINT fk_Card_Payment_Id FOREIGN KEY (Payment_Id) REFERENCES Payment_Method(Payment_Id)
   )';
   DBMS_OUTPUT.put_line('Card table created successfully');
 EXCEPTION
@@ -133,11 +134,11 @@ BEGIN
     Transaction_Id NUMBER DEFAULT transaction_id_seq.NEXTVAL PRIMARY KEY, 
     Transaction_Time TIMESTAMP,
     Price NUMBER,
-    Transaction_Customers_Customer_Id NUMBER,
+    Customer_Id NUMBER,
     Active VARCHAR2(10),
     Start_Date DATE,
     End_Date DATE,
-    CONSTRAINT fk_transaction_customers FOREIGN KEY (Transaction_Customers_Customer_Id) REFERENCES Customers(Customer_Id)
+    CONSTRAINT fk_Transaction_Customer_Id FOREIGN KEY (Customer_Id) REFERENCES Customers(Customer_Id)
   )';
   DBMS_OUTPUT.put_line('Transaction table created successfully');
 EXCEPTION
@@ -157,9 +158,7 @@ BEGIN
     Promocode_Id NUMBER DEFAULT promocode_id_seq.NEXTVAL PRIMARY KEY, 
     Promocode_Name VARCHAR2(100),
     Discount NUMBER,
-    Expiry_Date DATE,
-    Customers_Customer_Id NUMBER,
-    CONSTRAINT fk_promocode_customers FOREIGN KEY (Customers_Customer_Id) REFERENCES Customers(Customer_Id)
+    Expiry_Date DATE
   )';
   DBMS_OUTPUT.put_line('Promocodes table created successfully');
 EXCEPTION
@@ -197,8 +196,8 @@ BEGIN
     Song_Name VARCHAR2(100),
     Language VARCHAR2(50),
     Genre VARCHAR2(50),
-    Album_Album_Id NUMBER,
-    CONSTRAINT fk_songs_album FOREIGN KEY (Album_Album_Id) REFERENCES Album(Album_Id)
+    Album_Id NUMBER,
+    CONSTRAINT fk_Songs_Album_Id FOREIGN KEY (Album_Id) REFERENCES Album(Album_Id)
   )';
   DBMS_OUTPUT.put_line('Songs table created successfully');
 EXCEPTION
@@ -216,8 +215,8 @@ BEGIN
   EXECUTE IMMEDIATE 'CREATE TABLE Playlists (
     Playlist_Id NUMBER DEFAULT playlist_id_seq.NEXTVAL PRIMARY KEY, 
     Playlist_Name VARCHAR2(100),
-    Customers_Customer_Id NUMBER,
-    CONSTRAINT fk_playlists_customers FOREIGN KEY (Customers_Customer_Id) REFERENCES Customers(Customer_Id)
+    Customer_Id NUMBER,
+    CONSTRAINT fk_Playlists_Customer_Id FOREIGN KEY (Customer_Id) REFERENCES Customers(Customer_Id)
   )';
   DBMS_OUTPUT.put_line('Playlists table created successfully');
 EXCEPTION
@@ -231,10 +230,10 @@ BEGIN
 
 
   EXECUTE IMMEDIATE 'CREATE TABLE Downloaded_Songs (
-    Downloaded_Songs_Customers_Customer_Id NUMBER,
-    Downloaded_Songs_Songs_Song_Id NUMBER,
-    CONSTRAINT fk_downloaded_songs_customers FOREIGN KEY (Downloaded_Songs_Customers_Customer_Id) REFERENCES Customers(Customer_Id),
-    CONSTRAINT fk_downloaded_songs_songs FOREIGN KEY (Downloaded_Songs_Songs_Song_Id) REFERENCES Songs(Song_Id)
+    Customer_Id NUMBER,
+    Song_Id NUMBER,
+    CONSTRAINT fk_Downloaded_Songs_Customer_Id FOREIGN KEY (Customer_Id) REFERENCES Customers(Customer_Id),
+    CONSTRAINT fk_downloaded_songs_Song_Id FOREIGN KEY (Song_Id) REFERENCES Songs(Song_Id)
 
   )';
   DBMS_OUTPUT.put_line('Downloaded Songs table created successfully');
@@ -249,11 +248,11 @@ BEGIN
   DropTableIfExists('History');
 
   EXECUTE IMMEDIATE 'CREATE TABLE History (
-    Songs_Song_Id NUMBER,
-    Customers_Customer_Id NUMBER,
+    Song_Id NUMBER,
+    Customer_Id NUMBER,
     History_Date DATE,
-    CONSTRAINT fk_history_customers FOREIGN KEY (Customers_Customer_Id) REFERENCES Customers(Customer_Id),
-    CONSTRAINT fk_history_songs FOREIGN KEY (Songs_Song_Id) REFERENCES Songs(Song_Id)
+    CONSTRAINT fk_History_Customer_Id FOREIGN KEY (Customer_Id) REFERENCES Customers(Customer_Id),
+    CONSTRAINT fk_History_Song_Id FOREIGN KEY (Song_Id) REFERENCES Songs(Song_Id)
   )';
   DBMS_OUTPUT.put_line('History table created successfully');
 EXCEPTION
@@ -261,3 +260,5 @@ EXCEPTION
     DBMS_OUTPUT.put_line('Error occurred: ' || SQLERRM);
 END;
 /
+
+
