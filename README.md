@@ -7,4 +7,4 @@ Spotify's database hosts a vast collection of audio content and metadata, enabli
 
 The Spotify database system is a comprehensive database management system with user management, payment processing, and music library organization. Users can create profiles, manage subscriptions, and utilize various payment methods, including promocodes. The music catalog is organized into songs, albums, and playlists. There's also tracking of song downloads and possibly listening history, which could be used for recommendations and royalty management. The database design suggests a secure, scalable, and normalized system that supports complex queries, enabling features such as music streaming, downloads, and promotional campaigns.
 
-![er_diagram](https://github.com/MadhavNainala/Spotify-Database/assets/113320805/a987ca9f-5aa2-4766-a207-f8bbdde2c760)
+![er_diagram (1)](https://github.com/MadhavNainala/Spotify-Database/assets/113320805/eccb85ff-583d-4282-a2e6-607947704f59)
