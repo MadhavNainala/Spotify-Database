@@ -9,4 +9,4 @@ The Spotify database system is a comprehensive database management system with u
 
 ### Entity-Relationship Diagram
 
-![er_diagram (3)](https://github.com/MadhavNainala/Spotify-Database/assets/113320805/9e1d7851-ba68-45dc-b5ae-f91d5d2e76c9)
+![er_diagram (4)](https://github.com/MadhavNainala/Spotify-Database/assets/113320805/9e1d7851-ba68-45dc-b5ae-f91d5d2e76c9)
