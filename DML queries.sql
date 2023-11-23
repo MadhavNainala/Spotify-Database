@@ -96,3 +96,18 @@ EXCEPTION
     RAISE;
 END;
 /
+
+
+
+
+CREATE OR REPLACE PROCEDURE InsertAlbum(
+    p_album_name VARCHAR2
+) IS
+BEGIN
+  INSERT INTO Album(Album_Name)
+  VALUES (p_album_name);
+EXCEPTION
+  WHEN OTHERS THEN
+    RAISE;
+END;
+/
