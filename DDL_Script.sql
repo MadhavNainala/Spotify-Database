@@ -60,11 +60,9 @@ CREATE TABLE Promocodes (
 -- Payment_Method Table
 CREATE TABLE Payment_Method (
   Payment_Id NUMBER DEFAULT payment_id_seq.NEXTVAL PRIMARY KEY, 
-  Payment_Type VARCHAR2(50) NOT NULL CHECK (Payment_Type IN ('Card', 'Bank Account')),
+  Payment_Type VARCHAR2(50) NOT NULL CHECK (Payment_Type IN ('Card', 'Bank_Account')),
   Customer_Id NUMBER NOT NULL,
-  Promocode_Id NUMBER NOT NULL,
-  CONSTRAINT fk_Payment_Method_Customer_Id FOREIGN KEY (Customer_Id) REFERENCES Customers(Customer_Id),
-  CONSTRAINT fk_Payment_Method_Promocode_Id FOREIGN KEY (Promocode_Id) REFERENCES Promocodes(Promocode_Id)
+  CONSTRAINT fk_Payment_Method_Customer_Id FOREIGN KEY (Customer_Id) REFERENCES Customers(Customer_Id)
 );
 /
 
@@ -74,10 +72,7 @@ CREATE TABLE Bank_Account (
   Account_Number NUMBER NOT NULL, 
   Full_Name VARCHAR2(100) NOT NULL,
   Routing_Number NUMBER NOT NULL,
-  Account_Type VARCHAR2(50) NOT NULL,
-  Account_Limit NUMBER NOT NULL,
-  Payment_Id NUMBER NOT NULL,
-  CONSTRAINT fk_Bank_Account_Payment_Id FOREIGN KEY (Payment_Id) REFERENCES Payment_Method(Payment_Id)
+  Account_Type VARCHAR2(50) NOT NULL
 );
 /
 
@@ -89,9 +84,7 @@ CREATE TABLE Card (
   Last_Name VARCHAR2(50) NOT NULL,
   Expiry_Date DATE NOT NULL,
   CVV_Code NUMBER NOT NULL,
-  Zip VARCHAR2(10) NOT NULL,
-  Payment_Id NUMBER NOT NULL,
-  CONSTRAINT fk_Card_Payment_Id FOREIGN KEY (Payment_Id) REFERENCES Payment_Method(Payment_Id)
+  Zip VARCHAR2(10) NOT NULL
 );
 /
 
@@ -104,7 +97,9 @@ CREATE TABLE Transaction (
   Active VARCHAR2(10) NOT NULL,
   Start_Date DATE NOT NULL,
   End_Date DATE NOT NULL,
-  CONSTRAINT fk_Transaction_Customer_Id FOREIGN KEY (Customer_Id) REFERENCES Customers(Customer_Id)
+  Promocode_Id NUMBER NOT NULL,
+  CONSTRAINT fk_Transaction_Customer_Id FOREIGN KEY (Customer_Id) REFERENCES Customers(Customer_Id),
+  CONSTRAINT fk_Transaction_Promocode_Id FOREIGN KEY (Promocode_Id) REFERENCES Promocodes(Promocode_Id)
 );
 /
 
@@ -155,4 +150,6 @@ CREATE TABLE History (
   CONSTRAINT fk_History_Song_Id FOREIGN KEY (Song_Id) REFERENCES Songs(Song_Id)
 );
 /
+
+
 
