@@ -38,3 +38,22 @@ EXCEPTION
     RAISE;
 END;
 /
+
+
+
+CREATE OR REPLACE PROCEDURE InsertBankAccount(
+    p_account_number NUMBER,
+    p_full_name VARCHAR2,
+    p_routing_number NUMBER,
+    p_account_type VARCHAR2,
+    p_account_limit NUMBER,
+    p_payment_id NUMBER
+) IS
+BEGIN
+  INSERT INTO Bank_Account(Account_Number, Full_Name, Routing_Number, Account_Type, Account_Limit, Payment_Id)
+  VALUES (p_account_number, p_full_name, p_routing_number, p_account_type, p_account_limit, p_payment_id);
+EXCEPTION
+  WHEN OTHERS THEN
+    RAISE;
+END;
+/
