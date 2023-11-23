@@ -57,3 +57,23 @@ EXCEPTION
     RAISE;
 END;
 /
+
+
+
+CREATE OR REPLACE PROCEDURE InsertCard(
+    p_card_number NUMBER,
+    p_first_name VARCHAR2,
+    p_last_name VARCHAR2,
+    p_expiry_date DATE,
+    p_cvv_code NUMBER,
+    p_zip VARCHAR2,
+    p_payment_id NUMBER
+) IS
+BEGIN
+  INSERT INTO Card(Card_Number, First_Name, Last_Name, Expiry_Date, CVV_Code, Zip, Payment_Id)
+  VALUES (p_card_number, p_first_name, p_last_name, p_expiry_date, p_cvv_code, p_zip, p_payment_id);
+EXCEPTION
+  WHEN OTHERS THEN
+    RAISE;
+END;
+/
