@@ -131,7 +131,9 @@ CREATE TABLE Playlists (
   Playlist_Id NUMBER DEFAULT playlist_id_seq.NEXTVAL PRIMARY KEY, 
   Playlist_Name VARCHAR2(100) NOT NULL,
   Customer_Id NUMBER NOT NULL,
-  CONSTRAINT fk_Playlists_Customer_Id FOREIGN KEY (Customer_Id) REFERENCES Customers(Customer_Id)
+  Song_Id NUMBER NOT NULL,
+  CONSTRAINT fk_Playlists_Customer_Id FOREIGN KEY (Customer_Id) REFERENCES Customers(Customer_Id),
+  CONSTRAINT fk_Playlists_Song_Id FOREIGN KEY (Song_Id) REFERENCES Songs(Song_Id)
 );
 /
 
