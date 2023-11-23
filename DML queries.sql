@@ -111,3 +111,19 @@ EXCEPTION
     RAISE;
 END;
 /
+
+
+CREATE OR REPLACE PROCEDURE InsertSong(
+    p_song_name VARCHAR2,
+    p_language VARCHAR2,
+    p_genre VARCHAR2,
+    p_album_id NUMBER
+) IS
+BEGIN
+  INSERT INTO Songs(Song_Name, Language, Genre, Album_Id)
+  VALUES (p_song_name, p_language, p_genre, p_album_id);
+EXCEPTION
+  WHEN OTHERS THEN
+    RAISE;
+END;
+/
