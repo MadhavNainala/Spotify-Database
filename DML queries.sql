@@ -127,3 +127,30 @@ EXCEPTION
     RAISE;
 END;
 /
+
+
+CREATE OR REPLACE PROCEDURE InsertPlaylist(
+    p_playlist_name VARCHAR2,
+    p_customer_id NUMBER
+) IS
+BEGIN
+  INSERT INTO Playlists(Playlist_Name, Customer_Id)
+  VALUES (p_playlist_name, p_customer_id);
+EXCEPTION
+  WHEN OTHERS THEN
+    RAISE;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE InsertDownloadedSong(
+    p_customer_id NUMBER,
+    p_song_id NUMBER
+) IS
+BEGIN
+  INSERT INTO Downloaded_Songs(Customer_Id, Song_Id)
+  VALUES (p_customer_id, p_song_id);
+EXCEPTION
+  WHEN OTHERS THEN
+    RAISE;
+END;
+/
