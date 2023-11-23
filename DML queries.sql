@@ -24,3 +24,17 @@ EXCEPTION
     RAISE;
 END;
 /
+
+
+CREATE OR REPLACE PROCEDURE InsertPaymentMethod(
+    p_payment_type VARCHAR2,
+    p_customer_id NUMBER
+) IS
+BEGIN
+  INSERT INTO Payment_Method(Payment_Type, Customer_Id)
+  VALUES (p_payment_type, p_customer_id);
+EXCEPTION
+  WHEN OTHERS THEN
+    RAISE;
+END;
+/
