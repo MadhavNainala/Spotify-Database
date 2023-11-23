@@ -77,3 +77,22 @@ EXCEPTION
     RAISE;
 END;
 /
+
+
+
+CREATE OR REPLACE PROCEDURE InsertTransaction(
+    p_transaction_time TIMESTAMP,
+    p_price NUMBER,
+    p_customer_id NUMBER,
+    p_active VARCHAR2,
+    p_start_date DATE,
+    p_end_date DATE
+) IS
+BEGIN
+  INSERT INTO Transaction(Transaction_Time, Price, Customer_Id, Active, Start_Date, End_Date)
+  VALUES (p_transaction_time, p_price, p_customer_id, p_active, p_start_date, p_end_date);
+EXCEPTION
+  WHEN OTHERS THEN
+    RAISE;
+END;
+/
