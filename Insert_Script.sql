@@ -1,3 +1,161 @@
+SET SERVEROUTPUT ON;
+
+-- Dropping existing tables and sequences in one PL/SQL block
+BEGIN
+    -- Drop Tables
+    FOR r IN (SELECT table_name FROM user_tables) LOOP
+        EXECUTE IMMEDIATE ('DROP TABLE ' || r.table_name || ' CASCADE CONSTRAINTS');
+    END LOOP;
+
+    -- Drop Sequences
+    FOR s IN (SELECT sequence_name FROM user_sequences) LOOP
+        EXECUTE IMMEDIATE ('DROP SEQUENCE ' || s.sequence_name);
+    END LOOP;
+EXCEPTION WHEN OTHERS THEN
+    -- Ignore errors for non-existing tables or sequences
+    NULL;
+END;
+/
+
+-- Creating sequences
+CREATE SEQUENCE customer_id_seq START WITH 1 INCREMENT BY 1 MAXVALUE 999999999999999999999999999;
+/
+CREATE SEQUENCE payment_id_seq START WITH 1 INCREMENT BY 1 MAXVALUE 999999999999999999999999999;
+/
+CREATE SEQUENCE account_id_seq START WITH 1 INCREMENT BY 1 MAXVALUE 999999999999999999999999999;
+/
+CREATE SEQUENCE card_id_seq START WITH 1 INCREMENT BY 1 MAXVALUE 999999999999999999999999999;
+/
+CREATE SEQUENCE transaction_id_seq START WITH 1 INCREMENT BY 1 MAXVALUE 999999999999999999999999999;
+/
+CREATE SEQUENCE promocode_id_seq START WITH 1 INCREMENT BY 1 MAXVALUE 999999999999999999999999999;
+/
+CREATE SEQUENCE album_id_seq START WITH 1 INCREMENT BY 1 MAXVALUE 999999999999999999999999999;
+/
+CREATE SEQUENCE song_id_seq START WITH 1 INCREMENT BY 1 MAXVALUE 999999999999999999999999999;
+/
+CREATE SEQUENCE playlist_id_seq START WITH 1 INCREMENT BY 1 MAXVALUE 999999999999999999999999999;
+/
+
+-- Customers Table
+CREATE TABLE Customers (
+  Customer_Id NUMBER DEFAULT customer_id_seq.NEXTVAL PRIMARY KEY, 
+  Profile_Name VARCHAR2(100) NOT NULL,
+  Password VARCHAR2(100) NOT NULL,
+  DOB DATE NOT NULL,
+  Gender VARCHAR2(10) NOT NULL,
+  Subscription CHAR(1) NOT NULL
+);
+/
+
+-- Promocodes Table
+CREATE TABLE Promocodes (
+  Promocode_Id NUMBER DEFAULT promocode_id_seq.NEXTVAL PRIMARY KEY, 
+  Promocode_Name VARCHAR2(100) NOT NULL,
+  Discount NUMBER NOT NULL,
+  Expiry_Date DATE NOT NULL
+);
+/
+
+-- Payment_Method Table
+CREATE TABLE Payment_Method (
+  Payment_Id NUMBER DEFAULT payment_id_seq.NEXTVAL PRIMARY KEY, 
+  Payment_Type VARCHAR2(50) NOT NULL CHECK (Payment_Type IN ('Card', 'Bank Account')),
+  Customer_Id NUMBER NOT NULL,
+  Promocode_Id NUMBER NOT NULL,
+  CONSTRAINT fk_Payment_Method_Customer_Id FOREIGN KEY (Customer_Id) REFERENCES Customers(Customer_Id),
+  CONSTRAINT fk_Payment_Method_Promocode_Id FOREIGN KEY (Promocode_Id) REFERENCES Promocodes(Promocode_Id)
+);
+/
+
+-- Bank_Account Table
+CREATE TABLE Bank_Account (
+  Account_Id NUMBER DEFAULT account_id_seq.NEXTVAL PRIMARY KEY,
+  Account_Number NUMBER NOT NULL, 
+  Full_Name VARCHAR2(100) NOT NULL,
+  Routing_Number NUMBER NOT NULL,
+  Account_Type VARCHAR2(50) NOT NULL,
+  Account_Limit NUMBER NOT NULL,
+  Payment_Id NUMBER NOT NULL,
+  CONSTRAINT fk_Bank_Account_Payment_Id FOREIGN KEY (Payment_Id) REFERENCES Payment_Method(Payment_Id)
+);
+/
+
+-- Card Table
+CREATE TABLE Card (
+  Card_Id NUMBER DEFAULT card_id_seq.NEXTVAL PRIMARY KEY,
+  Card_Number NUMBER NOT NULL, 
+  First_Name VARCHAR2(50) NOT NULL,
+  Last_Name VARCHAR2(50) NOT NULL,
+  Expiry_Date DATE NOT NULL,
+  CVV_Code NUMBER NOT NULL,
+  Zip VARCHAR2(10) NOT NULL,
+  Payment_Id NUMBER NOT NULL,
+  CONSTRAINT fk_Card_Payment_Id FOREIGN KEY (Payment_Id) REFERENCES Payment_Method(Payment_Id)
+);
+/
+
+-- Transaction Table
+CREATE TABLE Transaction (
+  Transaction_Id NUMBER DEFAULT transaction_id_seq.NEXTVAL PRIMARY KEY, 
+  Transaction_Time TIMESTAMP NOT NULL,
+  Price NUMBER NOT NULL,
+  Customer_Id NUMBER NOT NULL,
+  Active VARCHAR2(10) NOT NULL,
+  Start_Date DATE NOT NULL,
+  End_Date DATE NOT NULL,
+  CONSTRAINT fk_Transaction_Customer_Id FOREIGN KEY (Customer_Id) REFERENCES Customers(Customer_Id)
+);
+/
+
+-- Album Table
+CREATE TABLE Album (
+  Album_Id NUMBER DEFAULT album_id_seq.NEXTVAL PRIMARY KEY, 
+  Album_Name VARCHAR2(100) NOT NULL
+);
+/
+
+-- Songs Table
+CREATE TABLE Songs (
+  Song_Id NUMBER DEFAULT song_id_seq.NEXTVAL PRIMARY KEY, 
+  Song_Name VARCHAR2(100) NOT NULL,
+  Language VARCHAR2(50) NOT NULL,
+  Genre VARCHAR2(50) NOT NULL,
+  Album_Id NUMBER NOT NULL,
+  CONSTRAINT fk_Songs_Album_Id FOREIGN KEY (Album_Id) REFERENCES Album(Album_Id)
+);
+/
+
+-- Playlists Table
+CREATE TABLE Playlists (
+  Playlist_Id NUMBER DEFAULT playlist_id_seq.NEXTVAL PRIMARY KEY, 
+  Playlist_Name VARCHAR2(100) NOT NULL,
+  Customer_Id NUMBER NOT NULL,
+  Song_Id NUMBER NOT NULL,
+  CONSTRAINT fk_Playlists_Customer_Id FOREIGN KEY (Customer_Id) REFERENCES Customers(Customer_Id),
+  CONSTRAINT fk_Playlists_Song_Id FOREIGN KEY (Song_Id) REFERENCES Songs(Song_Id)
+);
+/
+
+-- Downloaded_Songs Table
+CREATE TABLE Downloaded_Songs (
+  Customer_Id NUMBER NOT NULL,
+  Song_Id NUMBER NOT NULL,
+  CONSTRAINT fk_Downloaded_Songs_Customer_Id FOREIGN KEY (Customer_Id) REFERENCES Customers(Customer_Id),
+  CONSTRAINT fk_Downloaded_Songs_Song_Id FOREIGN KEY (Song_Id) REFERENCES Songs(Song_Id)
+);
+/
+
+-- History Table
+CREATE TABLE History (
+  Song_Id NUMBER NOT NULL,
+  Customer_Id NUMBER NOT NULL,
+  History_Date DATE NOT NULL,
+  CONSTRAINT fk_History_Customer_Id FOREIGN KEY (Customer_Id) REFERENCES Customers(Customer_Id),
+  CONSTRAINT fk_History_Song_Id FOREIGN KEY (Song_Id) REFERENCES Songs(Song_Id)
+);
+/
+
 CREATE OR REPLACE PROCEDURE InsertCustomer(
     p_profile_name VARCHAR2,
     p_password VARCHAR2,
@@ -232,19 +390,25 @@ CREATE OR REPLACE PROCEDURE InsertPlaylist(
     p_customer_id NUMBER,
     p_song_id NUMBER
 ) IS
+    v_customer_count NUMBER;
+    v_song_count NUMBER;
 BEGIN
-    -- Check if the playlist name is unique for the customer
+    -- Check if all parameters are non-NULL
     IF p_playlist_name IS NULL OR p_customer_id IS NULL OR p_song_id IS NULL THEN
         RAISE_APPLICATION_ERROR(-20001, 'All parameters must be non-NULL');
     END IF;
 
-    -- Check if the playlist name is unique for the customer
-    IF EXISTS (SELECT 1 FROM Playlists WHERE Playlist_Name = p_playlist_name AND Customer_Id = p_customer_id) THEN
-        RAISE_APPLICATION_ERROR(-20002, 'Playlist name must be unique for the customer');
+    -- Check if the provided Customer_Id exists in the Customers table
+    SELECT COUNT(1) INTO v_customer_count FROM Customers WHERE Customer_Id = p_customer_id;
+
+    IF v_customer_count = 0 THEN
+        RAISE_APPLICATION_ERROR(-20002, 'Invalid Customer_Id');
     END IF;
 
-    -- Check if the song_id exists in the Songs table
-    IF NOT EXISTS (SELECT 1 FROM Songs WHERE Song_Id = p_song_id) THEN
+    -- Check if the provided Song_Id exists in the Songs table
+    SELECT COUNT(1) INTO v_song_count FROM Songs WHERE Song_Id = p_song_id;
+
+    IF v_song_count = 0 THEN
         RAISE_APPLICATION_ERROR(-20003, 'Invalid Song_Id');
     END IF;
 
@@ -260,6 +424,7 @@ EXCEPTION
         ROLLBACK;
 END;
 /
+
 
 
 
@@ -368,38 +533,39 @@ END;
 
 BEGIN
     -- Promocode 1
-    InsertPromocode('SUMMER2023', TO_DATE('2023-08-31', 'YYYY-MM-DD'));
+    InsertPromocode('SUMMER2023', 10, TO_DATE('2023-08-31', 'YYYY-MM-DD'));
 
     -- Promocode 2
-    InsertPromocode('FALLSALE', TO_DATE('2023-11-30', 'YYYY-MM-DD'));
+    InsertPromocode('FALLSALE', 15, TO_DATE('2023-11-30', 'YYYY-MM-DD'));
 
     -- Promocode 3
-    InsertPromocode('HOLIDAY25', TO_DATE('2023-12-25', 'YYYY-MM-DD'));
+    InsertPromocode('HOLIDAY25', 25, TO_DATE('2023-12-25', 'YYYY-MM-DD'));
 
     -- Promocode 4
-    InsertPromocode('NEWYEAR2024', TO_DATE('2024-01-31', 'YYYY-MM-DD'));
+    InsertPromocode('NEWYEAR2024', 30, TO_DATE('2024-01-31', 'YYYY-MM-DD'));
 
     -- Promocode 5
-    InsertPromocode('SPRING40', TO_DATE('2024-04-30', 'YYYY-MM-DD'));
+    InsertPromocode('SPRING40', 40, TO_DATE('2024-04-30', 'YYYY-MM-DD'));
 
     -- Promocode 6
-    InsertPromocode('MEMORIAL15', TO_DATE('2024-05-31', 'YYYY-MM-DD'));
+    InsertPromocode('MEMORIAL15', 15, TO_DATE('2024-05-31', 'YYYY-MM-DD'));
 
     -- Promocode 7
-    InsertPromocode('FATHERSDAY', TO_DATE('2024-06-30', 'YYYY-MM-DD'));
+    InsertPromocode('FATHERSDAY', 20, TO_DATE('2024-06-30', 'YYYY-MM-DD'));
 
     -- Promocode 8
-    InsertPromocode('BACKTOSCHOOL', TO_DATE('2024-09-30', 'YYYY-MM-DD'));
+    InsertPromocode('BACKTOSCHOOL', 10, TO_DATE('2024-09-30', 'YYYY-MM-DD'));
 
     -- Promocode 9
-    InsertPromocode('HALLOWEEN20', TO_DATE('2024-10-31', 'YYYY-MM-DD'));
+    InsertPromocode('HALLOWEEN20', 20, TO_DATE('2024-10-31', 'YYYY-MM-DD'));
 
     -- Promocode 10
-    InsertPromocode('BLACKFRIDAY50', TO_DATE('2024-11-30', 'YYYY-MM-DD'));
+    InsertPromocode('BLACKFRIDAY50', 50, TO_DATE('2024-11-30', 'YYYY-MM-DD'));
 
     COMMIT;
 END;
 /
+
 
 
 BEGIN
@@ -439,75 +605,41 @@ END;
 
 
 BEGIN
-    -- Bank Account 1
-    InsertBankAccount(111122223, 'John Doe', 987654322, 'Savings', 5000, 1);
-
-    -- Bank Account 2
-    InsertBankAccount(222233334, 'Jane Smith', 123456781, 'Checking', 8000, 2);
-
-    -- Bank Account 3
-    InsertBankAccount(333344445, 'Bob Johnson', 111111112, 'Savings', 3000, 3);
-
-    -- Bank Account 4
-    InsertBankAccount(444455556, 'Alice Williams', 555555557, 'Checking', 6000, 4);
-
-    -- Bank Account 5
-    InsertBankAccount(555566667, 'Charlie Brown', 333333334, 'Savings', 7000, 5);
-
-    -- Bank Account 6
-    InsertBankAccount(666677778, 'Eva Martinez', 777777779, 'Checking', 4000, 6);
-
-    -- Bank Account 7
-    InsertBankAccount(777788889, 'David Smithson', 444444445, 'Savings', 5500, 7);
-
-    -- Bank Account 8
-    InsertBankAccount(888899990, 'Grace Turner', 888888890, 'Checking', 7500, 8);
-
-    -- Bank Account 9
-    InsertBankAccount(999900001, 'Frank Miller', 666666667, 'Savings', 6500, 9);
-
-    -- Bank Account 10
-    InsertBankAccount(100011112, 'Helen Johnson', 999999991, 'Checking', 9000, 10);
+    
+    InsertBankAccount(987654321, 'William Brown', 123456789, 'Savings', 5000, 1); 
+    InsertBankAccount(876543210, 'Emma Johnson', 234567890, 'Checking', 7000, 2);
+    InsertBankAccount(765432109, 'Christopher Lee', 345678901, 'Savings', 6000, 3);
+    InsertBankAccount(654321098, 'Olivia Davis', 456789012, 'Checking', 8000, 4);
+    InsertBankAccount(543210987, 'Michael Wilson', 567890123, 'Savings', 5500, 5);
+    InsertBankAccount(432109876, 'Sophia Smith', 678901234, 'Checking', 7200, 6);
+    InsertBankAccount(321098765, 'Matthew Taylor', 789012345, 'Savings', 6500, 7);
+    InsertBankAccount(210987654, 'Ava Brown', 890123456, 'Checking', 9000, 8);
+    InsertBankAccount(109876543, 'Ethan Davis', 901234567, 'Savings', 7500, 9);
+    InsertBankAccount(9876543210, 'Emily Martinez', 123456780, 'Checking', 8500, 10);
 
     COMMIT;
 END;
 /
+
 
 
 BEGIN
-    -- Card 1
-    InsertCard(1111222233441111, 'John', 'Doe', TO_DATE('01-2025', 'MM-YYYY'), 123, '12345', 1);
-
-    -- Card 2
-    InsertCard(2222333344552222, 'Jane', 'Smith', TO_DATE('02-2024', 'MM-YYYY'), 456, '67890', 2);
-
-    -- Card 3
-    InsertCard(3333444455663333, 'Bob', 'Johnson', TO_DATE('03-2023', 'MM-YYYY'), 789, '54321', 3);
-
-    -- Card 4
-    InsertCard(4444555566774444, 'Alice', 'Williams', TO_DATE('04-2026', 'MM-YYYY'), 012, '98765', 4);
-
-    -- Card 5
-    InsertCard(5555666677885555, 'Charlie', 'Brown', TO_DATE('05-2025', 'MM-YYYY'), 345, '43210', 5);
-
-    -- Card 6
-    InsertCard(6666777788996666, 'Eva', 'Martinez', TO_DATE('06-2024', 'MM-YYYY'), 678, '10987', 6);
-
-    -- Card 7
-    InsertCard(7777888899007777, 'David', 'Smithson', TO_DATE('07-2023', 'MM-YYYY'), 901, '65432', 7);
-
-    -- Card 8
-    InsertCard(8888999900118888, 'Grace', 'Turner', TO_DATE('08-2026', 'MM-YYYY'), 234, '21098', 8);
-
-    -- Card 9
-    InsertCard(9999000011229999, 'Frank', 'Miller', TO_DATE('09-2025', 'MM-YYYY'), 567, '76543', 9);
-
-    -- Card 10
-    InsertCard(1000111122331000, 'Helen', 'Johnson', TO_DATE('10-2024', 'MM-YYYY'), 890, '98701', 10);
+    
+    InsertCard(1234567812345678, 'John', 'Doe', TO_DATE('2024-12-31', 'YYYY-MM-DD'), 123, '12345', 1);
+    InsertCard(2345678923456789, 'Jane', 'Smith', TO_DATE('2023-11-30', 'YYYY-MM-DD'), 456, '67890', 2);
+    InsertCard(3456789034567890, 'Bob', 'Johnson', TO_DATE('2025-02-28', 'YYYY-MM-DD'), 789, '54321', 3);
+    InsertCard(4567890145678901, 'Alice', 'Williams', TO_DATE('2024-08-31', 'YYYY-MM-DD'), 321, '98765', 4);
+    InsertCard(5678901256789012, 'Charlie', 'Brown', TO_DATE('2023-10-31', 'YYYY-MM-DD'), 654, '23456', 5);
+    InsertCard(6789012367890123, 'Eva', 'Miller', TO_DATE('2025-01-31', 'YYYY-MM-DD'), 987, '87654', 6);
+    InsertCard(7890123478901234, 'David', 'Jones', TO_DATE('2024-04-30', 'YYYY-MM-DD'), 159, '32198', 7);
+    InsertCard(8901234589012345, 'Sophia', 'Davis', TO_DATE('2023-12-31', 'YYYY-MM-DD'), 753, '65432', 8);
+    InsertCard(9012345690123456, 'Mason', 'White', TO_DATE('2024-06-30', 'YYYY-MM-DD'), 246, '78901', 9);
+    InsertCard(1234567812345670, 'Olivia', 'Martinez', TO_DATE('2025-03-31', 'YYYY-MM-DD'), 852, '10293', 10);
 
     COMMIT;
 END;
 /
+
 
 
 BEGIN
