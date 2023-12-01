@@ -20,7 +20,7 @@ FETCH FIRST 5 ROW ONLY;
 CREATE VIEW Most_Used_Promocodes AS
 SELECT p.Promocode_Name, COUNT(*) AS Usage_Count
 FROM Promocodes p
-JOIN Payment_Method pm ON p.Promocode_Id = pm.Promocode_Id
+JOIN Transaction t ON p.Promocode_Id = t.Promocode_Id
 GROUP BY p.Promocode_Name
 ORDER BY Usage_Count DESC
 FETCH FIRST 5 ROW ONLY;
