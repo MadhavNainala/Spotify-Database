@@ -489,8 +489,6 @@ BEGIN
         RETURN;
     END IF;
 
-    -- Check promo code logic as per your business rules...
-
     -- Update the transaction
     UPDATE Transaction
     SET Transaction_Time = p_transaction_time,
