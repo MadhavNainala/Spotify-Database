@@ -71,7 +71,7 @@ BEGIN
 END;
 /
 
-SELECT * FROM PROMOCODES;
+
 
 BEGIN
   MusicServicePackage.InsertTransaction(CURRENT_TIMESTAMP, 11.99, 1, 'Y', TO_DATE('2023-01-01', 'YYYY-MM-DD'), TO_DATE('2023-02-01', 'YYYY-MM-DD'), 1);
@@ -148,6 +148,3 @@ BEGIN
 END;
 /
 
-select * from transaction;
-
-select * from customers;
