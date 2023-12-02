@@ -97,7 +97,7 @@ CREATE TABLE Transaction (
   Active VARCHAR2(10) NOT NULL,
   Start_Date DATE NOT NULL,
   End_Date DATE NOT NULL,
-  Promocode_Id NUMBER NOT NULL,
+  Promocode_Id NUMBER DEFAULT NULL,
   CONSTRAINT fk_Transaction_Customer_Id FOREIGN KEY (Customer_Id) REFERENCES Customers(Customer_Id),
   CONSTRAINT fk_Transaction_Promocode_Id FOREIGN KEY (Promocode_Id) REFERENCES Promocodes(Promocode_Id)
 );
