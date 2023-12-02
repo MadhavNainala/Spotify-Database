@@ -108,6 +108,48 @@ GROUP BY pm.Payment_Type;
 
 SELECT * FROM Revenue_By_Payment_Type;
 
+CREATE OR REPLACE VIEW Promocodes_Expiring_Soon AS
+SELECT Promocode_Id, Promocode_Name, Discount, Expiry_Date
+FROM Promocodes
+WHERE Expiry_Date BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '10' DAY;
+/
+
+SELECT * FROM Promocodes_Expiring_Soon;
+
+CREATE OR REPLACE VIEW Playlist_Song_Count AS
+SELECT Playlist_Id, Playlist_Name, COUNT(Song_Id) AS Number_Of_Songs
+FROM Playlists
+GROUP BY Playlist_Id, Playlist_Name;
+/
+
+
+SELECT * FROM Playlist_Song_Count;
+
+CREATE OR REPLACE VIEW User_Recommendations AS
+SELECT DISTINCT s.Song_Id, s.Song_Name, s.Genre
+FROM Songs s
+WHERE s.Genre IN (
+    SELECT DISTINCT s.Genre
+    FROM Songs s
+    JOIN History h ON h.Song_Id = s.Song_Id
+    UNION
+    SELECT DISTINCT s.Genre
+    FROM Songs s
+    JOIN Downloaded_Songs ds ON ds.Song_Id = s.Song_Id
+)
+AND s.Song_Id NOT IN (
+    SELECT h.Song_Id
+    FROM History h
+    UNION
+    SELECT ds.Song_Id
+    FROM Downloaded_Songs ds
+);
+/
+
+
+SELECT * FROM User_Recommendations;
+
+
 CREATE OR REPLACE VIEW Customers_View AS
 SELECT * FROM Customers;
 
