@@ -1,4 +1,4 @@
---Views
+
 CREATE OR REPLACE VIEW Most_Downloaded_Songs AS
 SELECT s.Song_Id, s.Song_Name, a.Album_Name, COUNT(*) AS Download_Count
 FROM Songs s
@@ -23,6 +23,13 @@ ORDER BY Listen_Count DESC;
 
 SELECT * FROM Most_Listened_Song_And_Album;
 
+CREATE VIEW GenreSongCount AS 
+SELECT Genre, COUNT(*) AS NumberOfSongs 
+FROM Songs 
+GROUP BY Genre;
+/
+
+SELECT * FROM GenreSongCount;
 
 CREATE OR REPLACE VIEW Most_Used_Promocodes AS
 SELECT p.Promocode_Id, p.Promocode_Name, COUNT(*) AS Usage_Count
@@ -34,19 +41,19 @@ ORDER BY Usage_Count DESC;
 
 SELECT * FROM Most_Used_Promocodes;
 
-CREATE OR REPLACE VIEW Transaction_Counts_By_Payment_Type AS
+CREATE OR REPLACE VIEW Transaction_Payment_Type_Count AS
 SELECT 
-    (SELECT COUNT(*) FROM Transaction t
-     JOIN Payment_Method pm ON t.Customer_Id = pm.Customer_Id
-     WHERE pm.Payment_Type = 'Bank_Account') AS Bank_Account_Transactions,
+    PM.Payment_Type, 
+    COUNT(*) AS Transaction_Count
+FROM 
+    Transaction T
+JOIN 
+    Payment_Method PM ON T.Payment_Id = PM.Payment_Id
+GROUP BY 
+    PM.Payment_Type;
 
-    (SELECT COUNT(*) FROM Transaction t
-     JOIN Payment_Method pm ON t.Customer_Id = pm.Customer_Id
-     WHERE pm.Payment_Type = 'Card') AS Card_Transactions
-FROM dual;
-/
 
-SELECT * FROM Transaction_Counts_By_Payment_Type;
+SELECT * FROM Transaction_Payment_Type_Count;
 
 
 CREATE OR REPLACE VIEW Transaction_Outcomes AS
@@ -67,46 +74,7 @@ FROM Customers;
 /
 
 SELECT * FROM Subscription_Status_Count;
-/
 
-CREATE OR REPLACE VIEW Most_Listened_Song_Of_The_Month AS
-SELECT s.Song_Id, s.Song_Name, COUNT(*) AS Listen_Count
-FROM Songs s
-JOIN History h ON s.Song_Id = h.Song_Id
-WHERE EXTRACT(MONTH FROM h.History_Date) = EXTRACT(MONTH FROM CURRENT_DATE)
-AND EXTRACT(YEAR FROM h.History_Date) = EXTRACT(YEAR FROM CURRENT_DATE)
-GROUP BY s.Song_Id, s.Song_Name
-ORDER BY Listen_Count DESC
-FETCH FIRST 5 ROW ONLY;
-/
-
-SELECT * FROM Most_Listened_Song_Of_The_Month;
-
-CREATE OR REPLACE VIEW Most_Used_Payment_Type AS
-SELECT pm.Payment_Type, COUNT(*) AS Usage_Count
-FROM Payment_Method pm
-GROUP BY pm.Payment_Type
-ORDER BY Usage_Count DESC;
-/
-
-SELECT * FROM Most_Used_Payment_Type;
-
-CREATE OR REPLACE VIEW Song_Count_By_Genre AS
-SELECT Genre, COUNT(*) AS Song_Count
-FROM Songs
-GROUP BY Genre;
-/
-
-SELECT * FROM Song_Count_By_Genre;
-
-CREATE OR REPLACE VIEW Revenue_By_Payment_Type AS
-SELECT pm.Payment_Type, SUM(t.Price) AS Total_Revenue
-FROM Payment_Method pm
-JOIN Transaction t ON pm.Customer_Id = t.Customer_Id
-GROUP BY pm.Payment_Type;
-/
-
-SELECT * FROM Revenue_By_Payment_Type;
 
 CREATE OR REPLACE VIEW Promocodes_Expiring_Soon AS
 SELECT Promocode_Id, Promocode_Name, Discount, Expiry_Date
@@ -116,14 +84,21 @@ WHERE Expiry_Date BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '10' DAY;
 
 SELECT * FROM Promocodes_Expiring_Soon;
 
-CREATE OR REPLACE VIEW Playlist_Song_Count AS
-SELECT Playlist_Id, Playlist_Name, COUNT(Song_Id) AS Number_Of_Songs
-FROM Playlists
-GROUP BY Playlist_Id, Playlist_Name;
-/
+CREATE OR REPLACE VIEW Playlist_Summary AS
+SELECT 
+    p.Customer_Id,
+    p.Playlist_Name,
+    COUNT(sp.Song_Id) AS NumberOfSongs
+FROM 
+    Playlist p
+JOIN 
+    Songs_Playlist sp ON p.Playlist_Id = sp.Playlist_Id
+GROUP BY 
+    p.Customer_Id, p.Playlist_Name;
 
 
-SELECT * FROM Playlist_Song_Count;
+SELECT * FROM Playlist_Summary;
+
 
 CREATE OR REPLACE VIEW User_Recommendations AS
 SELECT DISTINCT s.Song_Id, s.Song_Name, s.Genre
@@ -148,6 +123,65 @@ AND s.Song_Id NOT IN (
 
 
 SELECT * FROM User_Recommendations;
+
+
+CREATE OR REPLACE VIEW User_Recommendation AS
+WITH UserHistory AS (
+    SELECT DISTINCT s.Genre
+    FROM Songs s
+    JOIN History h ON h.Song_Id = s.Song_Id
+    WHERE h.Customer_Id = 4
+),
+UserDownloads AS (
+    SELECT DISTINCT s.Genre
+    FROM Songs s
+    JOIN Downloaded_Songs ds ON ds.Song_Id = s.Song_Id
+    WHERE ds.Customer_Id = 4
+),
+AllGenres AS (
+    SELECT DISTINCT Genre
+    FROM Songs
+)
+SELECT DISTINCT s.Song_Id, s.Song_Name, s.Genre
+FROM Songs s
+WHERE s.Genre IN (
+    SELECT DISTINCT Genre
+    FROM UserHistory
+    UNION
+    SELECT DISTINCT Genre
+    FROM UserDownloads
+)
+AND s.Song_Id NOT IN (
+    SELECT DISTINCT h.Song_Id
+    FROM History h
+    WHERE h.Customer_Id = 4
+    UNION
+    SELECT DISTINCT ds.Song_Id
+    FROM Downloaded_Songs ds
+    WHERE ds.Customer_Id = 4
+)
+OR NOT EXISTS (
+    SELECT 1
+    FROM UserHistory
+    UNION
+    SELECT 1
+    FROM UserDownloads
+)
+;
+
+-- Replace 4 with the actual customer ID you want to recommend songs for.
+
+SELECT * FROM User_Recommendation;
+
+CREATE OR REPLACE VIEW Revenue_By_Payment_Type AS
+SELECT pm.Payment_Type, SUM(t.Price) AS Total_Revenue
+FROM Payment_Method pm
+JOIN Transaction t ON pm.Customer_Id = t.Customer_Id
+GROUP BY pm.Payment_Type;
+/
+
+SELECT * FROM Revenue_By_Payment_Type;
+
 
 
 CREATE OR REPLACE VIEW Customers_View AS
@@ -175,7 +209,7 @@ CREATE OR REPLACE VIEW Songs_View AS
 SELECT * FROM Songs;
 
 CREATE OR REPLACE VIEW Playlists_View AS
-SELECT * FROM Playlists;
+SELECT * FROM Playlist;
 
 CREATE OR REPLACE VIEW Downloaded_Songs_View AS
 SELECT * FROM Downloaded_Songs;
@@ -183,16 +217,8 @@ SELECT * FROM Downloaded_Songs;
 CREATE OR REPLACE VIEW History_View AS
 SELECT * FROM History;
 
-/*
-SELECT * FROM Customers_View;
-SELECT * FROM Promocodes_View;
-SELECT * FROM Payment_Method_View;
-SELECT * FROM Bank_Account_View;
-SELECT * FROM Card_View;
-SELECT * FROM Transaction_View;
-SELECT * FROM Album_View;
-SELECT * FROM Songs_View;
-SELECT * FROM Playlists_View;
-SELECT * FROM Downloaded_Songs_View;
 SELECT * FROM History_View;
-*/
+
+CREATE OR REPLACE VIEW Songs_Playlist_View AS
+SELECT * FROM Songs_Playlist;
+

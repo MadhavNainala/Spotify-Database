@@ -44,7 +44,7 @@ CREATE TABLE Customers (
   Password VARCHAR2(100) NOT NULL,
   DOB DATE NOT NULL,
   Gender VARCHAR2(10) NOT NULL,
-  Subscription CHAR(1) NOT NULL
+  Subscription CHAR(1) DEFAULT NULL
 );
 /
 
@@ -98,8 +98,11 @@ CREATE TABLE Transaction (
   Start_Date DATE NOT NULL,
   End_Date DATE NOT NULL,
   Promocode_Id NUMBER DEFAULT NULL,
+  Payment_Id NUMBER NOT NULL,
   CONSTRAINT fk_Transaction_Customer_Id FOREIGN KEY (Customer_Id) REFERENCES Customers(Customer_Id),
-  CONSTRAINT fk_Transaction_Promocode_Id FOREIGN KEY (Promocode_Id) REFERENCES Promocodes(Promocode_Id)
+  CONSTRAINT fk_Transaction_Promocode_Id FOREIGN KEY (Promocode_Id) REFERENCES Promocodes(Promocode_Id),
+  CONSTRAINT fk_Transaction_Payment_Id FOREIGN KEY (Payment_Id) REFERENCES Payment_Method(Payment_Id)
+
 );
 /
 
@@ -122,20 +125,28 @@ CREATE TABLE Songs (
 /
 
 -- Playlists Table
-CREATE TABLE Playlists (
+CREATE TABLE Playlist (
   Playlist_Id NUMBER DEFAULT playlist_id_seq.NEXTVAL PRIMARY KEY, 
   Playlist_Name VARCHAR2(100) NOT NULL,
   Customer_Id NUMBER NOT NULL,
-  Song_Id NUMBER NOT NULL,
-  CONSTRAINT fk_Playlists_Customer_Id FOREIGN KEY (Customer_Id) REFERENCES Customers(Customer_Id),
-  CONSTRAINT fk_Playlists_Song_Id FOREIGN KEY (Song_Id) REFERENCES Songs(Song_Id)
+  CONSTRAINT fk_Playlist_Customer_Id FOREIGN KEY (Customer_Id) REFERENCES Customers(Customer_Id)
 );
 /
+
+-- Songs_Playlist Table
+CREATE TABLE Songs_Playlist (
+  Playlist_Id NUMBER NOT NULL, 
+  Song_Id NUMBER NOT NULL,
+  CONSTRAINT fk_Songs_Playlist_Playlist_Id FOREIGN KEY (Playlist_Id) REFERENCES Playlist(Playlist_Id),
+  CONSTRAINT fk_Songs_Playlist_Song_Id FOREIGN KEY (Song_Id) REFERENCES Songs(Song_Id)
+);
+
 
 -- Downloaded_Songs Table
 CREATE TABLE Downloaded_Songs (
   Customer_Id NUMBER NOT NULL,
   Song_Id NUMBER NOT NULL,
+  Download_Date DATE NOT NULL,
   CONSTRAINT fk_Downloaded_Songs_Customer_Id FOREIGN KEY (Customer_Id) REFERENCES Customers(Customer_Id),
   CONSTRAINT fk_Downloaded_Songs_Song_Id FOREIGN KEY (Song_Id) REFERENCES Songs(Song_Id)
 );
@@ -150,6 +161,7 @@ CREATE TABLE History (
   CONSTRAINT fk_History_Song_Id FOREIGN KEY (Song_Id) REFERENCES Songs(Song_Id)
 );
 /
+
 
 
 
