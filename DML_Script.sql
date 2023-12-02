@@ -147,6 +147,7 @@ CREATE OR REPLACE PACKAGE BODY MusicServicePackage AS
     v_exist_active NUMBER;
     v_discount NUMBER;
     v_promocode_exists NUMBER;
+    v_total_price NUMBER; -- Total price including discount
     BEGIN
     -- Check for active transactions for the customer
     SELECT COUNT(*)
@@ -175,11 +176,22 @@ CREATE OR REPLACE PACKAGE BODY MusicServicePackage AS
                 FROM Promocodes
                 WHERE Promocode_Id = p_promocode_id;
             END IF;
+        ELSE
+            v_discount := 0;      
+        END IF;
+
+        -- Calculate total price including discount
+        v_total_price := p_price + v_discount;
+
+        -- Check if total price is not greater than 20
+        IF v_total_price > 20 THEN
+            DBMS_OUTPUT.PUT_LINE('Total price including discount cannot be greater than 20.');
+            RETURN;
         END IF;
 
         -- Check if current date is within the start and end dates
         IF SYSDATE BETWEEN p_start_date AND p_end_date THEN
-            IF (p_price + v_discount) = 20 THEN
+            IF v_total_price = 20 THEN
                 v_active := 'Y';
             ELSE
                 v_active := 'N';
@@ -201,7 +213,7 @@ CREATE OR REPLACE PACKAGE BODY MusicServicePackage AS
         RAISE;
     END InsertTransaction;
   
-
+  
   
 
   PROCEDURE InsertBankAccount(
