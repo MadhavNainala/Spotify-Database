@@ -401,21 +401,29 @@ CREATE OR REPLACE PACKAGE BODY MusicServicePackage AS
   ) IS
       v_count NUMBER;
   BEGIN
+      IF p_expiry_date < SYSDATE THEN
+          DBMS_OUTPUT.PUT_LINE('Promocode with an expiry date before today cannot be inserted.');
+          RETURN;
+      END IF;
+
       IF p_discount >= 20 THEN
           DBMS_OUTPUT.PUT_LINE('Discount must be less than 20. Given discount: ' || p_discount);
           RETURN;
       END IF;
+
       SELECT COUNT(1) INTO v_count FROM Promocodes WHERE Promocode_Name = p_promocode_name;
       IF v_count > 0 THEN
           DBMS_OUTPUT.PUT_LINE('Duplicate Promocode Name: ' || p_promocode_name);
           RETURN;
       END IF;
+
       INSERT INTO Promocodes(Promocode_Name, Discount, Expiry_Date)
       VALUES (p_promocode_name, p_discount, p_expiry_date);
   EXCEPTION
       WHEN OTHERS THEN
           RAISE;
   END InsertPromocode;
+
 
   PROCEDURE InsertAlbum (
     p_album_name VARCHAR2
@@ -471,7 +479,6 @@ BEGIN
     END LOOP;
 END;
 /
-
 
 
 CREATE OR REPLACE PACKAGE MusicServiceUpdatePackage AS
@@ -987,7 +994,3 @@ CREATE OR REPLACE PACKAGE BODY MusicServiceDeletePackage AS
 
 END MusicServiceDeletePackage;
 /
-
-
-
-
