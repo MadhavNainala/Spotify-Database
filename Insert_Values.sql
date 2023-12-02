@@ -73,6 +73,7 @@ END;
 /
 
 
+
 BEGIN
     MusicServicePackage.InsertPromocode('NEWYEAR2024', 15, TO_DATE('2024-01-31', 'YYYY-MM-DD'));
     MusicServicePackage.InsertPromocode('SPRINGSALE', 20, TO_DATE('2023-05-31', 'YYYY-MM-DD'));
@@ -124,30 +125,28 @@ END;
 
 
 
-
 BEGIN
-    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 15, 1, 'Y', TO_DATE('2023-01-01', 'YYYY-MM-DD'), TO_DATE('2023-06-30', 'YYYY-MM-DD'), 2);
-    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 20, 2, 'N', TO_DATE('2023-02-01', 'YYYY-MM-DD'), TO_DATE('2023-07-31', 'YYYY-MM-DD'), 3);
-    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 20, 3, 'Y', TO_DATE('2023-03-01', 'YYYY-MM-DD'), TO_DATE('2023-08-31', 'YYYY-MM-DD'), 1);
-    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 20, 4, 'N', TO_DATE('2023-04-01', 'YYYY-MM-DD'), TO_DATE('2023-12-30', 'YYYY-MM-DD'), 2);
-    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 100, 5, 'Y', TO_DATE('2023-05-01', 'YYYY-MM-DD'), TO_DATE('2023-12-31', 'YYYY-MM-DD'), 3);
-    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 12, 6, 'Y', TO_DATE('2023-06-01', 'YYYY-MM-DD'), TO_DATE('2024-01-31', 'YYYY-MM-DD'), 1);
-    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 20, 7, 'N', TO_DATE('2023-07-01', 'YYYY-MM-DD'), TO_DATE('2024-02-28', 'YYYY-MM-DD'), 2);
-    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 130, 8, 'Y', TO_DATE('2023-08-01', 'YYYY-MM-DD'), TO_DATE('2024-03-31', 'YYYY-MM-DD'), 3);
-    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 220, 9, 'N', TO_DATE('2023-09-01', 'YYYY-MM-DD'), TO_DATE('2024-04-30', 'YYYY-MM-DD'), 1);
-    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 18, 10, 'Y', TO_DATE('2023-10-01', 'YYYY-MM-DD'), TO_DATE('2024-05-31', 'YYYY-MM-DD'), 2);
-    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 25, 11, 'Y', TO_DATE('2023-11-01', 'YYYY-MM-DD'), TO_DATE('2024-06-30', 'YYYY-MM-DD'), 3);
-    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 30, 12, 'N', TO_DATE('2023-12-01', 'YYYY-MM-DD'), TO_DATE('2024-07-31', 'YYYY-MM-DD'), 1);
-    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 35, 13, 'Y', TO_DATE('2024-01-01', 'YYYY-MM-DD'), TO_DATE('2024-08-31', 'YYYY-MM-DD'), 2);
-    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 40, 14, 'N', TO_DATE('2024-02-01', 'YYYY-MM-DD'), TO_DATE('2024-12-30', 'YYYY-MM-DD'), 3);
-    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 45, 15, 'Y', TO_DATE('2024-03-01', 'YYYY-MM-DD'), TO_DATE('2024-12-31', 'YYYY-MM-DD'), 1);
-    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 50, 16, 'Y', TO_DATE('2024-04-01', 'YYYY-MM-DD'), TO_DATE('2025-01-31', 'YYYY-MM-DD'), 2);
-    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 55, 17, 'N', TO_DATE('2024-05-01', 'YYYY-MM-DD'), TO_DATE('2025-02-28', 'YYYY-MM-DD'), 3);
-    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 60, 18, 'Y', TO_DATE('2024-06-01', 'YYYY-MM-DD'), TO_DATE('2025-03-31', 'YYYY-MM-DD'), 1);
-    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 65, 19, 'N', TO_DATE('2024-07-01', 'YYYY-MM-DD'), TO_DATE('2025-04-30', 'YYYY-MM-DD'), 2);
-    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 70, 20, 'Y', TO_DATE('2024-08-01', 'YYYY-MM-DD'), TO_DATE('2025-05-31', 'YYYY-MM-DD'), 3);
+    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 5, 1, 'Y', TO_DATE('2023-12-01', 'YYYY-MM-DD'), TO_DATE('2024-01-30', 'YYYY-MM-DD'), 1);
+    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 10, 2, 'N', TO_DATE('2023-12-01', 'YYYY-MM-DD'), TO_DATE('2024-02-28', 'YYYY-MM-DD'), 2);
+    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 20, 3, 'Y', TO_DATE('2023-03-01', 'YYYY-MM-DD'), TO_DATE('2023-08-31', 'YYYY-MM-DD'), NULL);
+    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 5, 4, 'N', TO_DATE('2023-12-01', 'YYYY-MM-DD'), TO_DATE('2023-12-30', 'YYYY-MM-DD'), 1);
+    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 12, 5, 'Y', TO_DATE('2023-05-01', 'YYYY-MM-DD'), TO_DATE('2023-12-31', 'YYYY-MM-DD'), 4);
+    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 17, 6, 'Y', TO_DATE('2023-06-01', 'YYYY-MM-DD'), TO_DATE('2024-01-31', 'YYYY-MM-DD'), 5);
+    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 20, 7, 'N', TO_DATE('2023-07-01', 'YYYY-MM-DD'), TO_DATE('2024-02-28', 'YYYY-MM-DD'), NULL);
+    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 5, 8, 'Y', TO_DATE('2023-08-01', 'YYYY-MM-DD'), TO_DATE('2024-03-31', 'YYYY-MM-DD'), 6);
+    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 21, 9, 'N', TO_DATE('2023-09-01', 'YYYY-MM-DD'), TO_DATE('2024-04-30', 'YYYY-MM-DD'), 7);
+    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 18, 10, 'Y', TO_DATE('2023-10-01', 'YYYY-MM-DD'), TO_DATE('2024-05-31', 'YYYY-MM-DD'), 8);
+    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 10, 11, 'Y', TO_DATE('2023-12-01', 'YYYY-MM-DD'), TO_DATE('2024-06-30', 'YYYY-MM-DD'), 9);
+    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 9, 12, 'N', TO_DATE('2023-12-01', 'YYYY-MM-DD'), TO_DATE('2024-07-31', 'YYYY-MM-DD'), 10);
+    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 16, 13, 'Y', TO_DATE('2024-01-01', 'YYYY-MM-DD'), TO_DATE('2024-08-31', 'YYYY-MM-DD'), NULL);
+    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 19, 14, 'N', TO_DATE('2024-02-01', 'YYYY-MM-DD'), TO_DATE('2024-12-30', 'YYYY-MM-DD'), 11);
+    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 11, 15, 'Y', TO_DATE('2024-03-01', 'YYYY-MM-DD'), TO_DATE('2024-12-31', 'YYYY-MM-DD'), 12);
+    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 22, 16, 'Y', TO_DATE('2024-04-01', 'YYYY-MM-DD'), TO_DATE('2025-01-31', 'YYYY-MM-DD'), 13);
+    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 10, 1, 'N', TO_DATE('2024-05-01', 'YYYY-MM-DD'), TO_DATE('2025-02-28', 'YYYY-MM-DD'), 4);
+    MusicServicePackage.InsertTransaction(SYSTIMESTAMP, 20, 2, 'Y', TO_DATE('2024-06-01', 'YYYY-MM-DD'), TO_DATE('2025-03-31', 'YYYY-MM-DD'), NULL);
+    
 END;
-/
+/    
 
 
 BEGIN
@@ -209,16 +208,16 @@ BEGIN
     MusicServicePackage.InsertPlaylist('Hip Hop Hits', 8, 8);
     MusicServicePackage.InsertPlaylist('Country Roads', 9, 9);
     MusicServicePackage.InsertPlaylist('Pop Stars', 10, 10);
-    MusicServicePackage.InsertPlaylist('RandB Soul', 11, 11);
-    MusicServicePackage.InsertPlaylist('Indie Vibes', 12, 12);
-    MusicServicePackage.InsertPlaylist('Electronic Beats', 13, 13);
-    MusicServicePackage.InsertPlaylist('Acoustic Serenity', 14, 14);
-    MusicServicePackage.InsertPlaylist('Latin Grooves', 15, 15);
-    MusicServicePackage.InsertPlaylist('Classical Masterpieces', 16, 16);
-    MusicServicePackage.InsertPlaylist('Reggae Rhythms', 17, 17);
-    MusicServicePackage.InsertPlaylist('Metal Mayhem', 18, 18);
-    MusicServicePackage.InsertPlaylist('K-Pop Craze', 19, 19);
-    MusicServicePackage.InsertPlaylist('Throwback Hits', 20, 20);
+    MusicServicePackage.InsertPlaylist('RandB Soul', 11, 1);
+    MusicServicePackage.InsertPlaylist('Indie Vibes', 12, 3);
+    MusicServicePackage.InsertPlaylist('Electronic Beats', 13, 3);
+    MusicServicePackage.InsertPlaylist('Acoustic Serenity', 14, 4);
+    MusicServicePackage.InsertPlaylist('Latin Grooves', 15, 4);
+    MusicServicePackage.InsertPlaylist('Classical Masterpieces', 16, 6);
+    MusicServicePackage.InsertPlaylist('Reggae Rhythms', 17, 7);
+    MusicServicePackage.InsertPlaylist('Metal Mayhem', 18, 8);
+    MusicServicePackage.InsertPlaylist('K-Pop Craze', 19, 4);
+    MusicServicePackage.InsertPlaylist('Throwback Hits', 20, 2);
 END;
 /
 
@@ -226,48 +225,57 @@ END;
 BEGIN
     MusicServicePackage.InsertDownloadedSong(1, 1);
     MusicServicePackage.InsertDownloadedSong(2, 2);
-    MusicServicePackage.InsertDownloadedSong(3, 3);
-    MusicServicePackage.InsertDownloadedSong(4, 4);
-    MusicServicePackage.InsertDownloadedSong(5, 5);
+    MusicServicePackage.InsertDownloadedSong(3, 2);
+    MusicServicePackage.InsertDownloadedSong(4, 2);
+    MusicServicePackage.InsertDownloadedSong(5, 6);
     MusicServicePackage.InsertDownloadedSong(6, 6);
-    MusicServicePackage.InsertDownloadedSong(7, 7);
-    MusicServicePackage.InsertDownloadedSong(8, 8);
-    MusicServicePackage.InsertDownloadedSong(9, 9);
-    MusicServicePackage.InsertDownloadedSong(10, 10);
-    MusicServicePackage.InsertDownloadedSong(11, 11);
-    MusicServicePackage.InsertDownloadedSong(12, 12);
-    MusicServicePackage.InsertDownloadedSong(13, 13);
-    MusicServicePackage.InsertDownloadedSong(14, 14);
-    MusicServicePackage.InsertDownloadedSong(15, 15);
-    MusicServicePackage.InsertDownloadedSong(16, 16);
+    MusicServicePackage.InsertDownloadedSong(7, 3);
+    MusicServicePackage.InsertDownloadedSong(8, 3);
+    MusicServicePackage.InsertDownloadedSong(9, 3);
+    MusicServicePackage.InsertDownloadedSong(10, 1);
+    MusicServicePackage.InsertDownloadedSong(11, 1);
+    MusicServicePackage.InsertDownloadedSong(12, 5);
+    MusicServicePackage.InsertDownloadedSong(13, 3);
+    MusicServicePackage.InsertDownloadedSong(14, 4);
+    MusicServicePackage.InsertDownloadedSong(15, 5);
+    MusicServicePackage.InsertDownloadedSong(16, 6);
     MusicServicePackage.InsertDownloadedSong(17, 17);
     MusicServicePackage.InsertDownloadedSong(18, 18);
-    MusicServicePackage.InsertDownloadedSong(19, 19);
-    MusicServicePackage.InsertDownloadedSong(20, 20);
+    MusicServicePackage.InsertDownloadedSong(19, 9);
+    MusicServicePackage.InsertDownloadedSong(20, 2);
 END;
 /
 
 
 BEGIN
-    MusicServicePackage.InsertHistory(1, 1, TO_DATE('2023-11-24', 'YYYY-MM-DD'));
-    MusicServicePackage.InsertHistory(2, 2, TO_DATE('2023-11-23', 'YYYY-MM-DD'));
-    MusicServicePackage.InsertHistory(3, 3, TO_DATE('2023-11-22', 'YYYY-MM-DD'));
-    MusicServicePackage.InsertHistory(4, 4, TO_DATE('2023-11-21', 'YYYY-MM-DD'));
-    MusicServicePackage.InsertHistory(5, 5, TO_DATE('2023-11-20', 'YYYY-MM-DD'));
-    MusicServicePackage.InsertHistory(6, 6, TO_DATE('2023-11-19', 'YYYY-MM-DD'));
-    MusicServicePackage.InsertHistory(7, 7, TO_DATE('2023-11-18', 'YYYY-MM-DD'));
-    MusicServicePackage.InsertHistory(8, 8, TO_DATE('2023-11-17', 'YYYY-MM-DD'));
-    MusicServicePackage.InsertHistory(9, 9, TO_DATE('2023-11-16', 'YYYY-MM-DD'));
-    MusicServicePackage.InsertHistory(10, 10, TO_DATE('2023-11-15', 'YYYY-MM-DD'));
-    MusicServicePackage.InsertHistory(11, 11, TO_DATE('2023-11-14', 'YYYY-MM-DD'));
-    MusicServicePackage.InsertHistory(12, 12, TO_DATE('2023-11-13', 'YYYY-MM-DD'));
-    MusicServicePackage.InsertHistory(13, 13, TO_DATE('2023-11-12', 'YYYY-MM-DD'));
-    MusicServicePackage.InsertHistory(14, 14, TO_DATE('2023-11-11', 'YYYY-MM-DD'));
-    MusicServicePackage.InsertHistory(15, 15, TO_DATE('2023-11-10', 'YYYY-MM-DD'));
-    MusicServicePackage.InsertHistory(16, 16, TO_DATE('2023-11-09', 'YYYY-MM-DD'));
-    MusicServicePackage.InsertHistory(17, 17, TO_DATE('2023-11-08', 'YYYY-MM-DD'));
-    MusicServicePackage.InsertHistory(18, 18, TO_DATE('2023-11-07', 'YYYY-MM-DD'));
-    MusicServicePackage.InsertHistory(19, 19, TO_DATE('2023-11-06', 'YYYY-MM-DD'));
-    MusicServicePackage.InsertHistory(20, 20, TO_DATE('2023-11-05', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(1, 1, TO_DATE('2023-12-02', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(1, 1, TO_DATE('2023-12-03', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(2, 2, TO_DATE('2023-12-07', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(2, 2, TO_DATE('2023-12-09', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(3, 3, TO_DATE('2023-12-12', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(3, 3, TO_DATE('2023-12-15', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(4, 4, TO_DATE('2023-12-18', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(4, 4, TO_DATE('2023-12-21', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(4, 4, TO_DATE('2023-12-25', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(5, 5, TO_DATE('2023-12-25', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(6, 6, TO_DATE('2023-12-14', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(7, 7, TO_DATE('2023-12-21', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(8, 8, TO_DATE('2023-12-03', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(8, 8, TO_DATE('2023-12-10', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(9, 9, TO_DATE('2023-12-02', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(10, 10, TO_DATE('2023-12-15', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(11, 11, TO_DATE('2023-12-05', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(11, 11, TO_DATE('2023-12-08', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(12, 12, TO_DATE('2023-12-10', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(12, 12, TO_DATE('2023-12-17', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(13, 13, TO_DATE('2023-12-09', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(14, 14, TO_DATE('2023-12-09', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(15, 15, TO_DATE('2023-12-22', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(16, 16, TO_DATE('2023-12-20', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(17, 17, TO_DATE('2023-12-23', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(18, 18, TO_DATE('2023-12-06', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(19, 19, TO_DATE('2023-12-11', 'YYYY-MM-DD'));
+    MusicServicePackage.InsertHistory(20, 20, TO_DATE('2023-12-16', 'YYYY-MM-DD'));
 END;
 /
+
